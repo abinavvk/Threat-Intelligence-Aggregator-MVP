@@ -1,0 +1,37 @@
+# =======================================================
+# Synthetic Threat Intelligence Blocklist (TXT Format)
+# Documentation & Benchmark Indicators Only
+# =======================================================
+
+# IPv4 Indicators
+192.0.2.100
+198.51.100.88
+203.0.113.55
+192.0.2.15
+
+# IPv6 Indicators
+2001:db8::1
+2001:db8:a00:20ff::fea0:1234
+
+# Suspicious Domains & FQDNs
+beacon-node-alpha.example.com
+phishing-portal.example.org
+suspicious-tracker.example.net
+MALICIOUS-BEACON.EXAMPLE.COM.
+
+# URLs (Defanged and Standard)
+https://example.com/gate.php?id=9928
+http://example.org/download/test_stage2.bin
+
+# Email Phishing Indicators
+spoofed-support@example.org
+fraud-ops@example.net
+
+# Cryptographic Malware Hashes
+# MD5
+5d41402abc4b2a76b9719d911017c592
+# SHA1
+aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d
+# SHA256
+ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+

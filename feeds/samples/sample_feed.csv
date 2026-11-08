@@ -1,0 +1,11 @@
+indicator,type,threat_type,confidence,description
+192.0.2.15,ipv4,c2_server,90,RFC 5737 benchmark C2 node
+198.51.100.42,ipv4,scanner,75,RFC 5737 benchmark port scanner
+2001:db8:85a3::8a2e:370:7334,ipv6,botnet_node,85,RFC 3849 benchmark IPv6 botnet peer
+malicious-beacon.example.com,domain,c2_domain,95,Synthetic C2 domain
+http://example.org/campaign1/payload.bin,url,payload_delivery,80,Synthetic payload drop URL
+alert-sender@example.net,email,phishing_sender,70,Synthetic spear-phishing sender
+d41d8cd98f00b204e9800998ecf8427e,md5,empty_file_hash,60,Synthetic MD5 test hash
+da39a3ee5e6b4b0d3255bfef95601890afd80709,sha1,sha1_fingerprint,65,Synthetic SHA1 test hash
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,sha256,sha256_fingerprint,95,Synthetic SHA256 test hash
+

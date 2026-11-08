@@ -1,0 +1,59 @@
+{
+  "feed_metadata": {
+    "title": "Synthetic Blue Team Intelligence Benchmark Feed",
+    "version": "1.0",
+    "tlp": "WHITE",
+    "description": "Safe RFC documentation and synthetic threat indicators for testing"
+  },
+  "indicators": [
+    {
+      "value": "192.0.2.200",
+      "type": "ipv4",
+      "threat_category": "c2",
+      "first_seen": "2026-11-01T00:00:00Z"
+    },
+    {
+      "value": "2001:db8:ffff::42",
+      "type": "ipv6",
+      "threat_category": "exfiltration",
+      "first_seen": "2026-11-02T12:00:00Z"
+    },
+    {
+      "value": "compromised-relay.example.org",
+      "type": "domain",
+      "threat_category": "relay",
+      "first_seen": "2026-11-03T08:30:00Z"
+    },
+    {
+      "value": "http://example.com/exploit/loader.ps1",
+      "type": "url",
+      "threat_category": "dropper",
+      "first_seen": "2026-11-04T15:45:00Z"
+    },
+    {
+      "value": "invoice-notification@example.com",
+      "type": "email",
+      "threat_category": "credential_harvesting",
+      "first_seen": "2026-11-05T09:10:00Z"
+    },
+    {
+      "value": "098f6bcd4621d373cade4e832627b4f6",
+      "type": "md5",
+      "threat_category": "ransomware_sample",
+      "first_seen": "2026-11-06T14:22:00Z"
+    },
+    {
+      "value": "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12",
+      "type": "sha1",
+      "threat_category": "trojan_payload",
+      "first_seen": "2026-11-07T11:05:00Z"
+    },
+    {
+      "value": "2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae",
+      "type": "sha256",
+      "threat_category": "wiper_artifact",
+      "first_seen": "2026-11-08T18:00:00Z"
+    }
+  ]
+}
+

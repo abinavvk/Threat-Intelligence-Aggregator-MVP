@@ -1,0 +1,77 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# SQLite databases & runtime data
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+database/*.db
+database/*.sqlite
+database/*.sqlite3
+database/*.db-wal
+database/*.db-shm
+database/*.db-journal
+
+# Logs
+logs/*.log
+*.log
+
+# Output artifacts (keep folder structure intact via .gitkeep)
+output/blocklists/*
+!output/blocklists/.gitkeep
+output/reports/*
+!output/reports/.gitkeep
+
+# Unit test / coverage reports
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables & secrets
+.env
+.env.*
+
