@@ -27,6 +27,14 @@ IOC_VALUE_KEYS: Set[str] = {
     "ip",
     "ipv4",
     "ipv6",
+    "dst_ip",
+    "dstip",
+    "destination_ip",
+    "src_ip",
+    "srcip",
+    "source_ip",
+    "ip_address",
+    "ipaddress",
     "domain",
     "url",
     "hash",
@@ -206,56 +214,102 @@ class IOCParser:
         if not content.strip():
             return results
 
+        cleaned_csv = ""
         try:
-            reader = csv.DictReader(io.StringIO(content))
+            lines = content.splitlines()
+            csv_lines: List[str] = []
+            header_found = False
+            in_quote = False
+
+            for line in lines:
+                stripped = line.strip()
+                if not stripped and not in_quote:
+                    continue
+
+                quote_count = line.count('"')
+
+                if in_quote:
+                    csv_lines.append(line)
+                    if quote_count % 2 != 0:
+                        in_quote = False
+                    continue
+
+                if quote_count % 2 != 0:
+                    in_quote = True
+
+                if stripped.startswith(("#", "//")):
+                    # Check if this comment line could be a commented header before data
+                    # e.g., "# dst_ip,dst_port,c2_status"
+                    if not header_found:
+                        uncommented = stripped.lstrip("#/ \t")
+                        try:
+                            test_reader = csv.reader([uncommented])
+                            test_row = next(test_reader, [])
+                            if any(f.strip().lower() in IOC_VALUE_KEYS for f in test_row):
+                                csv_lines.append(uncommented)
+                                header_found = True
+                                continue
+                        except Exception:
+                            pass
+                    continue
+
+                csv_lines.append(line)
+                header_found = True
+
+            if not csv_lines:
+                return results
+
+            cleaned_csv = "\n".join(csv_lines)
+            reader = csv.DictReader(io.StringIO(cleaned_csv))
             fieldnames = reader.fieldnames or []
 
             # Identify target column names
-            value_col = None
+            value_cols = [
+                field for field in fieldnames
+                if field and field.strip().lower() in IOC_VALUE_KEYS
+            ]
             type_col = None
-
             for field in fieldnames:
-                clean_field = field.strip().lower()
-                if not value_col and clean_field in IOC_VALUE_KEYS:
-                    value_col = field
-                if not type_col and clean_field in IOC_TYPE_KEYS:
+                if field and field.strip().lower() in IOC_TYPE_KEYS:
                     type_col = field
+                    break
 
-            # If no standard header found, fall back to line-based parsing
-            if not value_col:
-                return self.parse_text(content, source_info)
+            # If no standard header found, fall back to line-based text parsing
+            if not value_cols:
+                return self.parse_text(cleaned_csv, source_info)
 
             for row in reader:
-                val = (row.get(value_col) or "").strip()
-                if not val:
-                    continue
-
-                # Determine or verify type
                 explicit_type = (row.get(type_col) or "").strip().lower() if type_col else ""
-                inferred_type = self.classify_token(val)
 
-                chosen_type = explicit_type if explicit_type in SUPPORTED_IOC_TYPES else inferred_type
+                for val_col in value_cols:
+                    val = (row.get(val_col) or "").strip()
+                    if not val:
+                        continue
 
-                if chosen_type:
-                    # Collect auxiliary metadata from remaining columns
-                    row_metadata = {
-                        k: v.strip()
-                        for k, v in row.items()
-                        if k not in (value_col, type_col) and v is not None and v.strip() != ""
-                    }
-                    results.append(
-                        self._create_ioc(
-                            value=val,
-                            ioc_type=chosen_type,
-                            source_info=source_info,
-                            raw_value=val,
-                            metadata=row_metadata,
+                    inferred_type = self.classify_token(val)
+                    chosen_type = explicit_type if explicit_type in SUPPORTED_IOC_TYPES else inferred_type
+
+                    if chosen_type:
+                        # Collect auxiliary metadata from remaining columns
+                        row_metadata = {
+                            k: v.strip()
+                            for k, v in row.items()
+                            if k not in value_cols and k != type_col and v is not None and isinstance(v, str) and v.strip() != ""
+                        }
+                        results.append(
+                            self._create_ioc(
+                                value=val,
+                                ioc_type=chosen_type,
+                                source_info=source_info,
+                                raw_value=val,
+                                metadata=row_metadata,
+                            )
                         )
-                    )
 
         except Exception as e:
             logger.warning("CSV structured parsing encountered error: %s. Falling back to text extraction.", e)
-            return self.parse_text(content, source_info)
+            fallback_content = cleaned_csv if cleaned_csv else content
+            return self.parse_text(fallback_content, source_info)
 
         return results
 
@@ -421,6 +475,17 @@ class IOCParser:
         source_info = source_info or {}
         results: List[ParsedIOC] = []
 
+        if not content.strip():
+            return results
+
+        # Filter out lines starting with comment prefixes (# or //)
+        # Preserves legitimate lines, including URL anchor fragments
+        filtered_lines = [
+            line
+            for line in content.splitlines()
+            if not line.strip().startswith(("#", "//"))
+        ]
+        content = "\n".join(filtered_lines)
         if not content.strip():
             return results
 
